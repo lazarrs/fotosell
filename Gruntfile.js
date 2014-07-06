@@ -24,6 +24,8 @@ module.exports = function (grunt) {
   // Define the configuration for all the tasks
   grunt.initConfig({
 
+    aws: grunt.file.readJSON("credentials.json"),
+    
     // Project settings
     yeoman: appConfig,
 
@@ -231,10 +233,24 @@ module.exports = function (grunt) {
     // },
 
     // @todo the mangle option do break the application. Why?
-    uglify : {
+    // uglify : {
+    //   options: {
+    //     mangle: false
+    //   }
+    // },
+
+    s3: {
       options: {
-        mangle: false
-      }
+	accessKeyId: "<%= aws.accessKeyId %>",
+	secretAccessKey: "<%= aws.secretAccessKey %>",
+	bucket: "fotosell-app"
+      },
+      
+      //upload all files within build/ to root
+      build: {
+	cwd: "dist/",
+	src: "**"
+      },
     },
     
     imagemin: {
@@ -408,5 +424,10 @@ module.exports = function (grunt) {
     'newer:jshint',
     'test',
     'build'
+  ]);
+
+  grunt.registerTask('deploy', [
+    'build',
+    's3'
   ]);
 };

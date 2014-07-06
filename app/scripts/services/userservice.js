@@ -10,8 +10,8 @@
 
 /*global gapi */
 
-angular.module('fotosellApp')
-  .factory('UserService', function ($q, AWSService) {
+angular.module('fotosellApp.userservice', ['fotosellApp.awsservice'])
+  .factory('UserService', function (AWSService, $q) {
     var service = {
       _user: null,
       UsersTable: 'Users',

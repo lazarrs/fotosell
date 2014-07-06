@@ -10,7 +10,7 @@
 
 /*global AWS */
 
-angular.module('fotosellApp.services', [])
+angular.module('fotosellApp.awsservice', [])
   .provider('AWSService', function() {
     var self = this;
 
@@ -27,7 +27,7 @@ angular.module('fotosellApp.services', [])
       if (region) { AWS.config.region = region; }
     };
     
-    self.$get = function($q, $cacheFactory) {
+    this.$get = function($q, $cacheFactory) {
       var dynamoCache = $cacheFactory('dynamo'),
       s3Cache = $cacheFactory('s3Cache'),
       credentialsDefer = $q.defer(),

@@ -12,7 +12,8 @@ angular
   .module('fotosellApp', [
     'ngRoute',
     'ngTouch',
-    'fotosellApp.services'
+    'fotosellApp.awsservice',
+    'fotosellApp.userservice'
   ])
   .config(function(AWSServiceProvider) {
     AWSServiceProvider.setArn('arn:aws:iam::115360261513:role/google-web-role');

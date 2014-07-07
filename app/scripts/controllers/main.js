@@ -9,7 +9,7 @@
  */
 angular.module('fotosellApp')
   .controller('MainCtrl', function ($scope, UserService) {
-
+    
     var getItemsForSale = function() {
       UserService.itemsForSale()
       .then(function(images) {
@@ -28,12 +28,29 @@ angular.module('fotosellApp')
     }
     
     $scope.onFile = function(files) {
-      UserService.uploadItemForSale(files)
-      .then(function(data) {
-	// Refresh the current items for sale
-	getItemsForSale();
+
+      var reader = new FileReader();
+
+      reader.onload = function(e) {
+	$scope.$apply(function() {
+	  $scope.uploaded_image = files[0];
+	  $scope.uploaded_image.src = e.target.result;
 	});
+      }
+      reader.readAsDataURL(files[0]);
+      return;
+
     };
+
+    $scope.uploadImage = function(file) {
+      UserService.uploadItemForSale(file)
+	.then(function(data) {
+	  $scope.uploaded_image = null;
+	  // Refresh the current items for sale
+	  getItemsForSale();
+	});      
+    }
+    
     $scope.signedIn = function(oauth) {
       UserService.setCurrentUser(oauth)
 	.then(function(user) {

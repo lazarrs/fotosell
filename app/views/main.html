@@ -25,6 +25,17 @@
       <!-- /build -->
     </div>
   </div>
+
+  <div ng-show="uploaded_image" class="row">
+    <div class="thumbnail">
+      <img data-ng-src="{{uploaded_image.src}}" />
+      <div class="caption">
+	<p>Filename: {{ uploaded_image.name}}</p>
+	<p>Filesize: {{ uploaded_image.size | bytes}}</p>
+	<p><a ng-click="uploadImage(uploaded_image)" class="btn btn-primary" role="button">Upload Image</a></p>
+      </div>
+    </div>    
+  </div>
   
   <div ng-show="user" class="row">
     <div class="col-md-12">

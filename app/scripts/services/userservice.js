@@ -158,7 +158,7 @@ angular.module('fotosellApp.userservice', ['fotosellApp.awsservice'])
 	return d.promise;
       },
       
-      uploadItemForSale: function(items) {
+      uploadItemForSale: function(item) {
 	var d = $q.defer();
 	service.currentUser().then(function(user) {
           AWSService.s3({
@@ -166,7 +166,7 @@ angular.module('fotosellApp.userservice', ['fotosellApp.awsservice'])
               Bucket: service.Bucket
             }
           }).then(function(s3) {
-            var file = items[0]; // only one at a time
+            var file = item; // only one at a time
             var params = {
               Key: file.name,
               Body: file,

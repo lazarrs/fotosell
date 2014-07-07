@@ -371,7 +371,25 @@ module.exports = function (grunt) {
         configFile: 'test/karma.conf.js',
         singleRun: true
       }
+    },
+
+    processhtml: {
+      dist: {
+	options: {
+          process: true,
+	},
+	files: [
+          {
+            expand: true,
+            cwd: '<%= yeoman.app %>/',
+            src: ['**/*.html'],
+            dest: '<%= yeoman.dist %>/',
+            ext: '.html'
+          }
+        ]
+      }
     }
+
   });
 
 
@@ -412,6 +430,7 @@ module.exports = function (grunt) {
     'concat',
     'ngmin',
     'copy:dist',
+    'processhtml',
     'cdnify',
     'cssmin',
     'uglify',

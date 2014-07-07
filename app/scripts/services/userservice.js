@@ -114,6 +114,50 @@ angular.module('fotosellApp.userservice', ['fotosellApp.awsservice'])
 	return d.promise;
       },
 
+      deleteImage: function(image) {
+	var d = $q.defer();
+	service.currentUser().then(function(user) {
+          AWSService.s3({
+            params: {
+              Bucket: service.Bucket
+            }
+          }).then(function(s3) {
+            var params = {
+              Key: image.itemId,
+            }	    
+            s3.deleteObject(params, function(err, data) {
+	      if (err) {
+		console.log(err);
+		d.reject(err);
+		return;
+	      }
+	      
+	      AWSService.dynamo({
+                params: {TableName: service.UserIdsItemsTable}
+	      }).then(function(table) {
+                var deleteParams = {
+                  Key: {
+		    userId: {
+		      S: user.id
+		    },
+		    itemId: {
+		      S: image.itemId
+		    }
+		  }
+                };
+                table.deleteItem(deleteParams, function(err, data) {
+		  // @todo: handle err
+		  console.log(err);
+                  d.resolve(data);
+                });
+	      }); // AWSService
+	      
+	    });
+	  })
+	});
+	return d.promise;
+      },
+      
       uploadItemForSale: function(items) {
 	var d = $q.defer();
 	service.currentUser().then(function(user) {
@@ -130,6 +174,16 @@ angular.module('fotosellApp.userservice', ['fotosellApp.awsservice'])
             }
 	    
             s3.putObject(params, function(err, data) {
+	      // make this object world readable
+
+	      // s3.putObjectAcl({
+	      // 	Bucket: service.Bucket,
+	      // 	Key: items[0].name,
+	      // 	ACL: 'public-read'
+	      // }, function(err, data) {
+	      // 	console.log(err);
+	      // });
+	      
               // Also, let's get a url
 	      if (!err) {
 		var params = {
@@ -139,6 +193,7 @@ angular.module('fotosellApp.userservice', ['fotosellApp.awsservice'])
 		};
 		s3.getSignedUrl('getObject', params, function (err, url) {
 		  // now we have a url
+
 		  AWSService.dynamo({
                     params: {TableName: service.UserIdsItemsTable}
 		  }).then(function(table) {
@@ -158,7 +213,8 @@ angular.module('fotosellApp.userservice', ['fotosellApp.awsservice'])
                     table.putItem(itemParams, function(err, data) {
                       d.resolve(data);
                     });
-		  });
+		  }); // AWSService
+		  
 		});
 	      }
             });

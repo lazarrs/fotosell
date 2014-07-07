@@ -18,6 +18,14 @@ angular.module('fotosellApp')
     };
     // Load the user's list initialy
     getItemsForSale();
+
+    $scope.delete = function(image) {
+      UserService.deleteImage(image)
+      .then(function(data) {
+	// Refresh the current items for sale
+	getItemsForSale();	
+      });
+    }
     
     $scope.onFile = function(files) {
       UserService.uploadItemForSale(files)

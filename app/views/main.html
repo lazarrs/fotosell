@@ -6,6 +6,11 @@
 	 ng-repeat="image in images">
       <div class="thumbnail">
 	<img data-ng-src="{{image.itemUrl}}" />
+	<div class="caption">
+	  <button ng-click="delete(image)" type="button" class="close"><span aria-hidden="true">&times;</span>
+	    <span class="sr-only">Close</span></button>
+	  {{ image.itemId}}
+	  </div>
       </div>
     </div>
   </div>

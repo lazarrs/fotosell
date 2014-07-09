@@ -5,7 +5,7 @@
     <div class="col-sm-6 col-md-4"
 	 ng-repeat="image in images">
       <div class="thumbnail">
-	<img data-ng-src="{{image.itemUrl}}" />
+	<img data-ng-src="http://s3-eu-west-1.amazonaws.com/fotosell/{{user.id}}/{{image.itemId}}" />
 	<div class="caption">
 	  <button ng-click="delete(image)" type="button" class="close"><span aria-hidden="true">&times;</span>
 	    <span class="sr-only">Close</span></button>

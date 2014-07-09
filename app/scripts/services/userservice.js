@@ -92,19 +92,18 @@ angular.module('fotosellApp.userservice', ['fotosellApp.awsservice'])
 	    	}
               }
 	    }, function(err, data) {
-	      
               var items = [];
               if (data) {
 //		AWSService.s3({ params: { Bucket: service.Bucket }}).then(function(s3) {
-		  angular.forEach(data.Items, function(item) {
+		angular.forEach(data.Items, function(item) {
 //		    var itemId = item.ItemId.S;
 //		    var newUrl = s3.getSignedUrl('getObject', { Key: itemId });
-		    var item = JSON.parse(item.data.S);
+		  var item = JSON.parse(item.data.S);
 //		    item.itemUrl = newUrl;
-                    items.push(item);
+                  items.push(item);
 //		  });
-		  d.resolve(items);
 		});
+		d.resolve(items);
               } else {
 		d.reject(err);
               }
@@ -127,7 +126,6 @@ angular.module('fotosellApp.userservice', ['fotosellApp.awsservice'])
             }	    
             s3.deleteObject(params, function(err, data) {
 	      if (err) {
-		console.log(err);
 		d.reject(err);
 		return;
 	      }
@@ -147,7 +145,6 @@ angular.module('fotosellApp.userservice', ['fotosellApp.awsservice'])
                 };
                 table.deleteItem(deleteParams, function(err, data) {
 		  // @todo: handle err
-		  console.log(err);
                   d.resolve(data);
                 });
 	      }); // AWSService
@@ -167,28 +164,30 @@ angular.module('fotosellApp.userservice', ['fotosellApp.awsservice'])
             }
           }).then(function(s3) {
             var file = item; // only one at a time
+	    // put the file in the 'user folder'
+	    var key = user.id + '/' + file.name;
             var params = {
-              Key: file.name,
+              Key: key,
               Body: file,
               ContentType: file.type
             }
 	    
             s3.putObject(params, function(err, data) {
 	      // make this object world readable
-
-	      // s3.putObjectAcl({
-	      // 	Bucket: service.Bucket,
-	      // 	Key: items[0].name,
-	      // 	ACL: 'public-read'
-	      // }, function(err, data) {
-	      // 	console.log(err);
-	      // });
+	      
+	      s3.putObjectAcl({
+	      	Bucket: service.Bucket,
+	      	Key: key,
+	      	ACL: 'public-read'
+	      }, function(err, data) {
+	      	console.log(err);
+	      });
 	      
               // Also, let's get a url
 	      if (!err) {
 		var params = {
 		  Bucket: service.Bucket, 
-		  Key: file.name, 
+		  Key: key,
 		  Expires: 24*3600*365 // 1 year
 		};
 		s3.getSignedUrl('getObject', params, function (err, url) {

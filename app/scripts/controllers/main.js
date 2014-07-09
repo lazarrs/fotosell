@@ -11,10 +11,14 @@ angular.module('fotosellApp')
   .controller('MainCtrl', function ($scope, UserService) {
     
     var getItemsForSale = function() {
-      UserService.itemsForSale()
-      .then(function(images) {
-	$scope.images = images;
-      });
+      UserService.currentUser()
+	.then(function(user) {
+	  $scope.user = user;
+	  UserService.itemsForSale()
+	    .then(function(images) {
+	      $scope.images = images;
+	    });
+	});
     };
     // Load the user's list initialy
     getItemsForSale();

@@ -5,7 +5,9 @@
     <div class="col-sm-6 col-md-4"
 	 ng-repeat="image in images">
       <div class="thumbnail">
-	<img data-ng-src="http://s3-eu-west-1.amazonaws.com/fotosell/{{user.id}}/{{image.itemId}}" />
+	<a ng-href="{{ getImageUrl(image.itemId) }}" target="_blank">
+	  <img data-ng-src="{{ getImageUrl(image.itemId) }}" />
+	</a>
 	<div class="caption">
 	  <button ng-click="delete(image)" type="button" class="close"><span aria-hidden="true">&times;</span>
 	    <span class="sr-only">Close</span></button>
@@ -32,6 +34,7 @@
       <div class="caption">
 	<p>Filename: {{ uploaded_image.name}}</p>
 	<p>Filesize: {{ uploaded_image.size | bytes}}</p>
+	<p>Imagesize: {{ uploadedImage.width }} x {{ uploadedImage.height }} px.</p>
 	<p><a ng-click="uploadImage(uploaded_image)" class="btn btn-primary" role="button">Upload Image</a></p>
       </div>
     </div>    

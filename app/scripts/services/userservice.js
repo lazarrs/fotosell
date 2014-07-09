@@ -116,13 +116,14 @@ angular.module('fotosellApp.userservice', ['fotosellApp.awsservice'])
       deleteImage: function(image) {
 	var d = $q.defer();
 	service.currentUser().then(function(user) {
+	  var key = user.id + '/' + image.itemId;
           AWSService.s3({
             params: {
               Bucket: service.Bucket
             }
           }).then(function(s3) {
             var params = {
-              Key: image.itemId,
+              Key: key,
             }	    
             s3.deleteObject(params, function(err, data) {
 	      if (err) {
@@ -155,7 +156,7 @@ angular.module('fotosellApp.userservice', ['fotosellApp.awsservice'])
 	return d.promise;
       },
       
-      uploadItemForSale: function(item) {
+      uploadItemForSale: function(item, blob) {
 	var d = $q.defer();
 	service.currentUser().then(function(user) {
           AWSService.s3({
@@ -168,7 +169,7 @@ angular.module('fotosellApp.userservice', ['fotosellApp.awsservice'])
 	    var key = user.id + '/' + file.name;
             var params = {
               Key: key,
-              Body: file,
+              Body: blob || file,
               ContentType: file.type
             }
 	    
